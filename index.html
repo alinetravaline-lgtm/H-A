@@ -542,7 +542,7 @@
     <form id="formProduto">
       <input type="hidden" id="prodId">
       <div class="form-row">
-        <div><label>Nome *</label><input id="prodNome" placeholder="Ex.: Caixa Sortida"></div>
+        <div><label>Nome *</label><input id="prodNome" placeholder="Ex.: Caixa Sortida" list="dlProdReceitas"><small style="font-size:11px;color:var(--marrom-suave);margin-top:2px;display:block">💡 Sugere produtos e receitas existentes</small></div>
         <div><label>Quantidade de Doces</label><input id="prodCategoria" type="number" min="0" step="1" placeholder="Ex.: 4, 6, 12"></div>
         <div><label>Código</label><input id="prodCodigo" placeholder="Ex.: CX001"></div>
       </div>
@@ -643,7 +643,7 @@
     <form id="formCusto">
       <input type="hidden" id="custoId">
       <div class="form-row">
-        <div><label>Nome da Receita / Custo *</label><input id="custoNome" required placeholder="Ex.: Brigadeiro, Musse de Limão, Embalagem 4un"></div>
+        <div><label>Nome da Receita / Custo *</label><input id="custoNome" required placeholder="Ex.: Brigadeiro, Musse de Limão, Embalagem 4un" list="dlProdReceitas"><small style="font-size:11px;color:var(--marrom-suave);margin-top:2px;display:block">💡 Sugere produtos e receitas existentes</small></div>
         <div><label>Categoria</label>
           <select id="custoCategoria">
             <option value="Receita">Receita / Massa</option>
@@ -659,21 +659,23 @@
 
       <div class="card" style="background:var(--creme);margin:14px 0;padding:14px;box-shadow:none">
         <h4 style="color:var(--marrom-1);font-size:15px;margin-bottom:10px">🧂 Itens da Receita</h4>
-        <p style="color:var(--marrom-3);font-size:12px;margin-bottom:10px">💡 Digite o nome do item e quanto custou no total. O custo por unidade é calculado automaticamente: <b>custo total ÷ rendimento</b>.</p>
+        <p style="color:var(--marrom-3);font-size:12px;margin-bottom:10px">💡 Digite o item, a quantidade usada e o custo por item. O <b>Custo Total = Qtd × Custo/Item</b>. O <b>Custo por Unidade = Custo Total ÷ Rendimento</b>.</p>
         <div class="table-wrap" style="box-shadow:none;border:1px solid var(--creme-3)">
           <table>
             <thead>
               <tr>
-                <th style="width:50px">#</th>
+                <th style="width:36px">#</th>
                 <th>Item</th>
-                <th style="width:160px">Custo Total (R$)</th>
-                <th style="width:160px">Custo por Unidade</th>
+                <th style="width:110px">Quantidade</th>
+                <th style="width:130px">Custo/Item (R$)</th>
+                <th style="width:130px">Custo Total (R$)</th>
+                <th style="width:130px">Custo / Unidade</th>
               </tr>
             </thead>
             <tbody id="receitaItensBody"></tbody>
             <tfoot>
               <tr style="background:var(--creme-2);font-weight:700">
-                <td colspan="2" style="text-align:right;color:var(--marrom-1)">TOTAL DA RECEITA →</td>
+                <td colspan="4" style="text-align:right;color:var(--marrom-1)">TOTAL DA RECEITA →</td>
                 <td><span id="receitaCustoTotal" style="color:var(--dourado-escuro);font-size:16px">R$ 0,00</span></td>
                 <td><span id="receitaCustoUnit" style="color:var(--dourado-escuro);font-size:16px">R$ 0,00</span></td>
               </tr>
@@ -1107,6 +1109,13 @@
 
 </main>
 
+<!-- DATALISTS (autocomplete interligado entre produtos / receitas / insumos) -->
+<datalist id="dlProdutos"></datalist>
+<datalist id="dlReceitas"></datalist>
+<datalist id="dlInsumos"></datalist>
+<datalist id="dlProdReceitas"></datalist>
+<datalist id="dlInsRec"></datalist>
+
 <!-- TOAST -->
 <div class="toast" id="toast"></div>
 
@@ -1169,7 +1178,7 @@ let DB = {
 };
 // Estados temporários dos formulários
 let composicaoTemp = []; // form de produto: lista de {custoId, quantidade}
-let receitaTemp = Array.from({length:10}, ()=>({nome:'',custoTotal:0})); // form de custo: 10 linhas {nome, custoTotal}
+let receitaTemp = Array.from({length:10}, ()=>({nome:'',quantidade:0,custoUnit:0})); // form de custo: 10 linhas {nome, quantidade, custoUnit}
 
 function salvar(){ localStorage.setItem(KEY, JSON.stringify(DB)); }
 function carregar(){
@@ -1289,6 +1298,17 @@ function carregar(){
   DB.custos.forEach(c=>{
     if(!c.fichaTecnica) c.fichaTecnica=[];
     if(!c.rendimento) c.rendimento=1;
+    // Migração: itens com formato antigo {nome, custoTotal} → {nome, quantidade, custoUnit, custoTotal}
+    if(c.itens && c.itens.length){
+      c.itens.forEach(it=>{
+        if(it.quantidade === undefined && it.custoTotal !== undefined){
+          it.quantidade = 1;
+          it.custoUnit = +it.custoTotal||0;
+        }
+        if(it.quantidade === undefined) it.quantidade = 0;
+        if(it.custoUnit === undefined) it.custoUnit = 0;
+      });
+    }
   });
   // Custos fixos
   if(!DB.custosFixos) DB.custosFixos = [];
@@ -1309,11 +1329,17 @@ function fmt4(v){ return 'R$ ' + (Number(v)||0).toFixed(4).replace('.',','); }
 /* Calcula o custo TOTAL de uma receita/custo */
 function custoReceita(c){
   if(!c) return 0;
-  // Novo formato: lista de itens com nome+custoTotal
+  // Novo formato: lista de itens {nome, quantidade, custoUnit}
+  // Compatibilidade com formato anterior {nome, custoTotal} (sem quantidade)
   if(c.itens && c.itens.length){
-    return c.itens.reduce((s,i)=>s+(+i.custoTotal||0),0);
+    return c.itens.reduce((s,i)=>{
+      if(i.quantidade !== undefined && i.custoUnit !== undefined){
+        return s + (+i.quantidade||0) * (+i.custoUnit||0);
+      }
+      return s + (+i.custoTotal||0);
+    }, 0);
   }
-  // Legado: ficha técnica com referência a insumos cadastrados
+  // Legado mais antigo: ficha técnica com referência a insumos cadastrados
   if(c.fichaTecnica && c.fichaTecnica.length){
     let total = 0;
     c.fichaTecnica.forEach(f=>{
@@ -1543,11 +1569,17 @@ function removerComposicaoItem(idx){
 document.getElementById('formCusto').addEventListener('submit', e=>{
   e.preventDefault();
   const id = document.getElementById('custoId').value;
-  // Salva apenas linhas que tenham nome OU custo > 0, mantendo as 10 posições para edição posterior
-  const itens = receitaTemp.slice(0,10).map(it=>({
-    nome: (it.nome||'').trim(),
-    custoTotal: +it.custoTotal||0
-  }));
+  // Salva itens no novo formato: {nome, quantidade, custoUnit, custoTotal (derivado)}
+  const itens = receitaTemp.slice(0,10).map(it=>{
+    const q = +it.quantidade||0;
+    const cu = +it.custoUnit||0;
+    return {
+      nome: (it.nome||'').trim(),
+      quantidade: q,
+      custoUnit: cu,
+      custoTotal: q * cu
+    };
+  });
   const obj = {
     id: id ? +id : novoId(DB.custos),
     nome: document.getElementById('custoNome').value.trim(),
@@ -1565,7 +1597,7 @@ document.getElementById('formCusto').addEventListener('submit', e=>{
 });
 
 function novoItens10(){
-  return Array.from({length:10}, ()=>({nome:'',custoTotal:0}));
+  return Array.from({length:10}, ()=>({nome:'',quantidade:0,custoUnit:0}));
 }
 
 function limparFormCusto(){
@@ -1586,21 +1618,29 @@ function editarCusto(id){
   document.getElementById('custoUnidadeRend').value=c.unidadeRend||'un';
   document.getElementById('custoObs').value=c.obs||'';
 
-  // Carrega itens novos OU converte ficha técnica antiga
+  // Carrega itens novos OU converte formatos antigos
   if(c.itens && c.itens.length){
-    receitaTemp = JSON.parse(JSON.stringify(c.itens));
+    receitaTemp = c.itens.map(it=>{
+      // Novo formato: já tem quantidade e custoUnit
+      if(it.quantidade !== undefined && it.custoUnit !== undefined){
+        return {nome: it.nome||'', quantidade: +it.quantidade||0, custoUnit: +it.custoUnit||0};
+      }
+      // Formato anterior (só custoTotal): assume quantidade=1
+      return {nome: it.nome||'', quantidade: 1, custoUnit: +it.custoTotal||0};
+    });
   } else if(c.fichaTecnica && c.fichaTecnica.length){
     receitaTemp = c.fichaTecnica.map(f=>{
       const ins = DB.insumos.find(i=>i.id==f.insumoId);
       return {
         nome: ins ? ins.nome : `Insumo #${f.insumoId}`,
-        custoTotal: ins ? (ins.custoUnit||0) * (f.quantidade||0) : 0
+        quantidade: +f.quantidade||0,
+        custoUnit: ins ? +ins.custoUnit||0 : 0
       };
     });
   } else {
     receitaTemp = [];
   }
-  while(receitaTemp.length<10) receitaTemp.push({nome:'',custoTotal:0});
+  while(receitaTemp.length<10) receitaTemp.push({nome:'',quantidade:0,custoUnit:0});
   receitaTemp = receitaTemp.slice(0,10);
   renderReceitaTemp();
   document.querySelector('[data-tab="custos"]').click();
@@ -1627,12 +1667,16 @@ function renderReceitaTemp(){
   receitaTemp = receitaTemp.slice(0,10);
 
   tbody.innerHTML = receitaTemp.map((it,idx)=>{
-    const ct = +it.custoTotal||0;
+    const qt = +it.quantidade||0;
+    const cu = +it.custoUnit||0;
+    const sub = qt * cu;
     return `<tr>
       <td style="color:var(--marrom-suave);font-weight:600;text-align:center">${idx+1}</td>
-      <td><input type="text" value="${(it.nome||'').replace(/"/g,'&quot;')}" placeholder="Item ${idx+1}" oninput="atualizarReceitaItem(${idx},'nome',this.value)" style="width:100%;padding:7px 8px;font-size:14px"></td>
-      <td><input type="number" step="0.01" min="0" value="${ct>0?ct:''}" placeholder="0,00" oninput="atualizarReceitaItem(${idx},'custoTotal',this.value)" style="width:100%;padding:7px 8px;font-size:14px;text-align:right"></td>
-      <td class="rec-unit-cell" style="color:var(--dourado-escuro);font-weight:600;text-align:center;font-size:14px">${ct>0?fmt(ct/(+document.getElementById('custoRendimento').value||1)):'—'}</td>
+      <td><input type="text" value="${(it.nome||'').replace(/"/g,'&quot;')}" placeholder="Item ${idx+1}" oninput="atualizarReceitaItem(${idx},'nome',this.value)" onchange="autoPreencherCustoItem(${idx},this.value)" list="dlInsRec" style="width:100%;padding:7px 8px;font-size:14px"></td>
+      <td><input type="number" step="0.001" min="0" value="${qt>0?qt:''}" placeholder="0" oninput="atualizarReceitaItem(${idx},'quantidade',this.value)" style="width:100%;padding:7px 8px;font-size:14px;text-align:center"></td>
+      <td><input type="number" step="0.0001" min="0" value="${cu>0?cu:''}" placeholder="0,00" oninput="atualizarReceitaItem(${idx},'custoUnit',this.value)" style="width:100%;padding:7px 8px;font-size:14px;text-align:right"></td>
+      <td class="rec-total-cell" style="color:var(--dourado-escuro);font-weight:600;text-align:right;font-size:14px;background:var(--creme-2)">${sub>0?fmt(sub):'—'}</td>
+      <td class="rec-unit-cell" style="color:var(--dourado-escuro);font-weight:600;text-align:center;font-size:14px">${sub>0?fmt(sub/(+document.getElementById('custoRendimento').value||1)):'—'}</td>
     </tr>`;
   }).join('');
 
@@ -1640,13 +1684,50 @@ function renderReceitaTemp(){
 }
 
 function atualizarReceitaItem(idx, campo, valor){
-  if(!receitaTemp[idx]) receitaTemp[idx]={nome:'',custoTotal:0};
-  if(campo==='custoTotal'){
-    receitaTemp[idx].custoTotal = +valor||0;
+  if(!receitaTemp[idx]) receitaTemp[idx]={nome:'',quantidade:0,custoUnit:0};
+  if(campo==='quantidade'){
+    receitaTemp[idx].quantidade = +valor||0;
+  } else if(campo==='custoUnit'){
+    receitaTemp[idx].custoUnit = +valor||0;
   } else {
     receitaTemp[idx].nome = valor;
   }
   recalcularReceitaTotais();
+}
+
+/* Quando o usuário seleciona um nome (digitando ou da dropdown),
+   se for um insumo ou receita já cadastrada, preenche automaticamente
+   o Custo/Item com o custo unitário e define quantidade=1 se vazia.
+   O usuário ajusta a quantidade conforme o uso real. */
+function autoPreencherCustoItem(idx, nome){
+  if(!nome || !nome.trim()) return;
+  if(!receitaTemp[idx]) return;
+  // Não sobrescreve se já tem custo unitário preenchido
+  if((+receitaTemp[idx].custoUnit||0) > 0) return;
+
+  const nomeBusca = nome.trim().toLowerCase();
+
+  // 1) Procura em insumos
+  const ins = DB.insumos.find(i => (i.nome||'').toLowerCase() === nomeBusca);
+  if(ins){
+    receitaTemp[idx].custoUnit = +ins.custoUnit || 0;
+    if(!(+receitaTemp[idx].quantidade)) receitaTemp[idx].quantidade = 1;
+    renderReceitaTemp();
+    toast(`💡 "${ins.nome}": ${fmt(ins.custoUnit)}/${ins.unidade}, qtd=1. Ajuste a quantidade.`);
+    return;
+  }
+
+  // 2) Procura em receitas
+  const rec = DB.custos.find(c => (c.nome||'').toLowerCase() === nomeBusca);
+  if(rec){
+    const cu = custoReceitaUnit(rec);
+    if(cu > 0){
+      receitaTemp[idx].custoUnit = cu;
+      if(!(+receitaTemp[idx].quantidade)) receitaTemp[idx].quantidade = 1;
+      renderReceitaTemp();
+      toast(`💡 "${rec.nome}": ${fmt(cu)}/${rec.unidadeRend||'un'}, qtd=1. Ajuste a quantidade.`);
+    }
+  }
 }
 
 function recalcularReceitaTotais(){
@@ -1654,10 +1735,15 @@ function recalcularReceitaTotais(){
   const tbody = document.getElementById('receitaItensBody');
   let total = 0;
   receitaTemp.forEach((it,idx)=>{
-    const ct = +it.custoTotal||0;
-    total += ct;
+    const qt = +it.quantidade||0;
+    const cu = +it.custoUnit||0;
+    const sub = qt * cu;
+    total += sub;
     if(tbody && tbody.rows[idx]){
-      tbody.rows[idx].cells[3].textContent = ct>0 ? fmt(ct/rend) : '—';
+      // Coluna 4: Custo Total (multiplicação)
+      tbody.rows[idx].cells[4].textContent = sub>0 ? fmt(sub) : '—';
+      // Coluna 5: Custo por Unidade (total ÷ rendimento)
+      tbody.rows[idx].cells[5].textContent = sub>0 ? fmt(sub/rend) : '—';
     }
   });
   const elTotal = document.getElementById('receitaCustoTotal');
@@ -2881,9 +2967,31 @@ function resetarTudo(){
 /* ===========================================================
    INIT
 =========================================================== */
+/* Atualiza os datalists (autocomplete) usados nos formulários
+   para manter produtos, receitas e insumos interligados. */
+function atualizarDatalists(){
+  const esc = s => String(s||'').replace(/"/g,'&quot;');
+  const opts = arr => [...new Set(arr.filter(Boolean))].sort().map(n=>`<option value="${esc(n)}">`).join('');
+
+  const nomesProd = DB.produtos.map(p=>p.nome);
+  const nomesRec = DB.custos.map(c=>c.nome);
+  const nomesIns = DB.insumos.map(i=>i.nome);
+
+  const dlP = document.getElementById('dlProdutos');
+  if(dlP) dlP.innerHTML = opts(nomesProd);
+  const dlR = document.getElementById('dlReceitas');
+  if(dlR) dlR.innerHTML = opts(nomesRec);
+  const dlI = document.getElementById('dlInsumos');
+  if(dlI) dlI.innerHTML = opts(nomesIns);
+  const dlPR = document.getElementById('dlProdReceitas');
+  if(dlPR) dlPR.innerHTML = opts([...nomesProd, ...nomesRec]);
+  const dlIR = document.getElementById('dlInsRec');
+  if(dlIR) dlIR.innerHTML = opts([...nomesIns, ...nomesRec]);
+}
+
 function refresh(){
   renderInsumos(); renderCustos(); renderFixos(); renderProdutos(); renderPromos(); renderCaixa(); renderDespesas(); renderVendas(); renderVendedores(); dashboard(); renderRelatorio();
-  renderComposicaoTemp(); renderReceitaTemp(); atualizarChoiceStats();
+  renderComposicaoTemp(); renderReceitaTemp(); atualizarChoiceStats(); atualizarDatalists();
 }
 
 /* ============== SIMULADOR DE PROJEÇÃO ============== */
