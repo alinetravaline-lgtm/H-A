@@ -1321,7 +1321,141 @@ function carregar(){
       {id:3,categoria:'proLabore',desc:'Pró-labore do proprietário (exemplo)',valor:3000.00,ativo:1,obs:''},
     ];
   }
+
+  // ===== MIGRAÇÃO: aplicar custos da planilha ASDEFRGH.xlsx (uma vez só) =====
+  if(!DB.excelImportadoV1){
+    aplicarCustosPlanilhaExcel();
+    DB.excelImportadoV1 = true;
+  }
+  // Correção: embalagem 6 com mesmo custo da 9
+  if(!DB.embalagem6Fix){
+    const e6 = (DB.custos||[]).find(c => /embalagem 6/i.test(c.nome||''));
+    if(e6){
+      e6.obs = 'Caixa 6 doces — mesmo custo da C/9 (R$ 0,94)';
+      e6.itens = [
+        {nome:'Embalagem externa', quantidade:1, custoUnit:0.79, custoTotal:0.79},
+        {nome:'Embalagem unitária', quantidade:1, custoUnit:0.06, custoTotal:0.06},
+        {nome:'Adesivo', quantidade:1, custoUnit:0.09, custoTotal:0.09},
+        {nome:'Etiqueta validade', quantidade:1, custoUnit:0, custoTotal:0}
+      ];
+    }
+    DB.embalagem6Fix = true;
+  }
+
   salvar();
+}
+
+/* Aplica os custos da planilha ASDEFRGH.xlsx (Brigadeiro, Ninho c/ Nutella,
+   Brigadeiro de Limão, Mousse Maracujá/Morango, Churros + embalagens C/4 e C/9). */
+function aplicarCustosPlanilhaExcel(){
+  // Helper: cria itens da receita com os ingredientes do Excel.
+  // Usa "CUSTO TOTAL" do Excel diretamente (qty=1, custoUnit=total).
+  const r = (nome, categoria, rendimento, unidadeRend, obs, itens) => ({
+    nome, categoria, rendimento, unidadeRend, obs,
+    itens: itens.map(it => ({
+      nome: it[0],
+      quantidade: 1,
+      custoUnit: +it[1],
+      custoTotal: +it[1]
+    })),
+    fichaTecnica: []
+  });
+
+  // 5 receitas + 2 embalagens da planilha
+  const receitasExcel = [
+    r('Brigadeiro', 'Receita', 82, 'un', 'Custo planilha: R$ 0,26/un',[
+      ['Leite Moça (2 latas)', 9.98],
+      ['Toddy', 1.78],
+      ['Creme de Leite', 2.63],
+      ['Manteiga', 0.72],
+      ['Granulado', 0.06],
+      ['Gás', 1.00],
+      ['Mão de obra/diversos', 5.15]
+    ]),
+    r('Ninho com Nutella', 'Receita', 82, 'un', 'Custo planilha: R$ 0,28/un',[
+      ['Leite Moça (2 latas)', 9.98],
+      ['Leite em pó', 2.43],
+      ['Creme de Leite', 2.63],
+      ['Manteiga', 0.72],
+      ['Leite em pó decorativo', 0.05],
+      ['Nutella', 0.03],
+      ['Gás', 1.00],
+      ['Mão de obra/diversos', 6.12]
+    ]),
+    r('Brigadeiro de Limão', 'Receita', 44, 'un', 'Custo planilha: R$ 0,13/un',[
+      ['Leite Moça', 5.49],
+      ['Limão', 0.43],
+      ['Casca de limão', 0.00],
+      ['Gás', 0.00],
+      ['Diversos', -0.20]
+    ]),
+    r('Mousse Maracujá / Morango', 'Receita', 58, 'pote', 'Custo planilha: R$ 0,21/un (pote)',[
+      ['Leite Moça', 5.49],
+      ['Tang (suco)', 0.85],
+      ['Creme de Leite', 2.63],
+      ['Geleia/Polpa', 0.00],
+      ['Limão', 0.15],
+      ['Mão de obra/diversos', 3.06]
+    ]),
+    r('Churros', 'Receita', 83, 'un', 'Custo planilha: R$ 0,26/un',[
+      ['Leite Moça (2 latas)', 9.98],
+      ['Creme de Leite', 2.63],
+      ['Manteiga', 0.36],
+      ['Mão de obra/diversos', 8.61]
+    ]),
+    r('Embalagem 4 unidades', 'Embalagem', 1, 'cx', 'Caixa para 4 doces (planilha: R$ 0,33)',[
+      ['Embalagem externa', 0.22],
+      ['Embalagem unitária', 0.02],
+      ['Adesivo', 0.09],
+      ['Etiqueta validade', 0.00]
+    ]),
+    r('Embalagem 6 unidades', 'Embalagem', 1, 'cx', 'Caixa para 6 doces — mesmo custo da C/9 (R$ 0,94)',[
+      ['Embalagem externa', 0.79],
+      ['Embalagem unitária', 0.06],
+      ['Adesivo', 0.09],
+      ['Etiqueta validade', 0.00]
+    ]),
+    r('Embalagem 9 unidades', 'Embalagem', 1, 'cx', 'Caixa para 9 doces (planilha: R$ 0,94)',[
+      ['Embalagem externa', 0.79],
+      ['Embalagem unitária', 0.06],
+      ['Adesivo', 0.09],
+      ['Etiqueta validade', 0.00]
+    ])
+  ];
+
+  // Atualiza ou cria cada receita no DB.custos
+  if(!DB.custos) DB.custos = [];
+  let nextId = (DB.custos.length ? Math.max(...DB.custos.map(c=>c.id)) : 0) + 1;
+
+  // Mapeia receitas do Excel → possíveis nomes existentes no DB do usuário
+  const aliases = {
+    'Brigadeiro':                  ['brigadeiro','brigadeiro tradicional'],
+    'Ninho com Nutella':           ['ninho com nutella','ninho c/ nutella','ninho c/nutella'],
+    'Brigadeiro de Limão':         ['brigadeiro de limão','musse de limão','mousse de limão'],
+    'Mousse Maracujá / Morango':   ['musse de maracujá','mousse de maracujá','mousse maracujá','mousse de morango','musse de morango'],
+    'Churros':                     ['churros'],
+    'Embalagem 4 unidades':        ['embalagem 4 unidades','embalagem 4un','caixa 4'],
+    'Embalagem 6 unidades':        ['embalagem 6 unidades','embalagem 6un','caixa 6'],
+    'Embalagem 9 unidades':        ['embalagem 9 unidades','embalagem 9un','caixa 9']
+  };
+
+  receitasExcel.forEach(novo => {
+    const candidatos = aliases[novo.nome] || [novo.nome.toLowerCase()];
+    const ex = DB.custos.find(c =>
+      candidatos.includes((c.nome||'').toLowerCase().trim())
+    );
+    if(ex){
+      ex.nome = novo.nome;
+      ex.categoria = novo.categoria;
+      ex.rendimento = novo.rendimento;
+      ex.unidadeRend = novo.unidadeRend;
+      ex.obs = novo.obs;
+      ex.itens = novo.itens;
+      ex.fichaTecnica = [];
+    } else {
+      DB.custos.push({...novo, id: nextId++});
+    }
+  });
 }
 
 function novoId(arr){ return arr.length ? Math.max(...arr.map(x=>x.id))+1 : 1; }
