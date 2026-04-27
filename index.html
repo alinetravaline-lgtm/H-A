@@ -436,10 +436,16 @@
         <span class="periodo-data" id="hojeData">—</span>
       </div>
       <div class="periodo-bruto"><span>R$</span><b id="hojeBruto">0,00</b></div>
-      <div class="periodo-row"><span>💰 Lucro líquido</span><b id="hojeLiq">R$ 0,00</b></div>
       <div class="periodo-row"><span>🛒 Vendas</span><b id="hojeQtd">0</b></div>
       <div class="periodo-row"><span>🎫 Ticket médio</span><b id="hojeTicket">R$ 0,00</b></div>
-      <div class="periodo-row"><span>📦 Custo</span><b id="hojeCusto">R$ 0,00</b></div>
+      <div class="periodo-row"><span>📦 Custo do produto</span><b id="hojeCusto">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">💰 Comissão variável</span><b id="hojeComVar" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row" style="background:rgba(212,175,55,.08);padding:6px 4px;border-radius:6px;margin:4px -4px"><span style="font-weight:700">🔻 Lucro BRUTO</span><b id="hojeLucroBruto" style="color:var(--dourado-escuro);font-size:15px">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">👷 Mão de obra (rateio dia)</span><b id="hojeFixoMao" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">🚚 Transporte (rateio dia)</span><b id="hojeFixoTransp" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">💵 Comissão fixa (rateio)</span><b id="hojeFixoCom" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">👔 Pró-labore (rateio dia)</span><b id="hojeFixoPro" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row" style="border-top:2px solid var(--dourado);padding-top:10px;margin-top:8px"><span style="font-weight:700;color:var(--marrom-1)">✅ Lucro LÍQUIDO</span><b id="hojeLiq" style="color:var(--verde);font-size:18px">R$ 0,00</b></div>
     </div>
 
     <!-- SEMANA -->
@@ -450,9 +456,16 @@
         <span class="periodo-data" id="semanaData">—</span>
       </div>
       <div class="periodo-bruto"><span>R$</span><b id="semanaBruto">0,00</b></div>
-      <div class="periodo-row"><span>💰 Lucro líquido</span><b id="semanaLiq">R$ 0,00</b></div>
       <div class="periodo-row"><span>🛒 Vendas</span><b id="semanaQtd">0</b></div>
       <div class="periodo-row"><span>📊 Média/dia</span><b id="semanaMedia">R$ 0,00</b></div>
+      <div class="periodo-row"><span>📦 Custo do produto</span><b id="semanaCusto">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">💰 Comissão variável</span><b id="semanaComVar" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row" style="background:rgba(212,175,55,.08);padding:6px 4px;border-radius:6px;margin:4px -4px"><span style="font-weight:700">🔻 Lucro BRUTO</span><b id="semanaLucroBruto" style="color:var(--dourado-escuro);font-size:15px">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">👷 Mão de obra (rateio sem)</span><b id="semanaFixoMao" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">🚚 Transporte (rateio sem)</span><b id="semanaFixoTransp" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">💵 Comissão fixa (rateio)</span><b id="semanaFixoCom" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">👔 Pró-labore (rateio sem)</span><b id="semanaFixoPro" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row" style="border-top:2px solid var(--dourado);padding-top:10px;margin-top:8px"><span style="font-weight:700;color:var(--marrom-1)">✅ Lucro LÍQUIDO</span><b id="semanaLiq" style="color:var(--verde);font-size:18px">R$ 0,00</b></div>
       <div class="dia-bars" id="semanaBars"></div>
     </div>
 
@@ -464,15 +477,35 @@
         <span class="periodo-data" id="mesData">—</span>
       </div>
       <div class="periodo-bruto"><span>R$</span><b id="mesBruto">0,00</b></div>
-      <div class="periodo-row"><span>💰 Lucro líquido</span><b id="mesLiq">R$ 0,00</b></div>
       <div class="periodo-row"><span>🛒 Vendas</span><b id="mesQtd">0</b></div>
       <div class="periodo-row"><span>🎫 Ticket médio</span><b id="mesTicket">R$ 0,00</b></div>
+      <div class="periodo-row"><span>📦 Custo do produto</span><b id="mesCusto">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">💰 Comissão variável</span><b id="mesComVar" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row" style="background:rgba(212,175,55,.18);padding:6px 4px;border-radius:6px;margin:4px -4px"><span style="font-weight:700">🔻 Lucro BRUTO</span><b id="mesLucroBruto" style="color:var(--dourado-claro);font-size:15px">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">👷 Mão de obra (mensal)</span><b id="mesFixoMao" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">🚚 Transporte (mensal)</span><b id="mesFixoTransp" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">💵 Comissão fixa (mensal)</span><b id="mesFixoCom" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row"><span style="font-size:12px">👔 Pró-labore (mensal)</span><b id="mesFixoPro" style="font-size:13px">R$ 0,00</b></div>
+      <div class="periodo-row" style="border-top:2px solid var(--dourado-claro);padding-top:10px;margin-top:8px"><span style="font-weight:700;color:var(--dourado-claro)">✅ Lucro LÍQUIDO</span><b id="mesLiq" style="color:var(--dourado-claro);font-size:18px">R$ 0,00</b></div>
       <div class="projecao-box">
         <div class="projecao-text">📈 Projeção fim do mês</div>
         <div class="projecao-valor" id="mesProjBruto">R$ 0,00</div>
         <div class="barra-progresso" style="margin-top:6px"><div id="mesProjBarFill" style="width:0%"></div></div>
         <div class="projecao-sub" id="mesProjSub">—</div>
       </div>
+    </div>
+  </div>
+
+  <div class="grid grid-2" style="margin-bottom:20px">
+    <div class="card">
+      <h3 style="color:var(--marrom-1);margin-bottom:6px">📊 Onde foi parar cada real — HOJE</h3>
+      <p style="font-size:11px;color:var(--marrom-suave);margin-bottom:14px;font-style:italic">Decomposição em tempo real do custo total do dia</p>
+      <div id="custosDetalhadosHoje"></div>
+    </div>
+    <div class="card">
+      <h3 style="color:var(--marrom-1);margin-bottom:6px">📊 Onde foi parar cada real — SEMANA</h3>
+      <p style="font-size:11px;color:var(--marrom-suave);margin-bottom:14px;font-style:italic">Decomposição em tempo real do custo total da semana</p>
+      <div id="custosDetalhadosSemana"></div>
     </div>
   </div>
 
@@ -973,44 +1006,69 @@
     <div class="card kpi gold"><div class="kpi-label">Ponto de Equilíbrio</div><div class="kpi-value" id="rEquilibrio">R$ 0,00</div><div class="kpi-sub">Vendas necessárias</div></div>
   </div>
 
+  <!-- ================ META DA SEMANA — DECOMPOSIÇÃO DE CUSTOS ================ -->
+  <div class="simulador-card" style="margin-top:24px">
+    <h3>🎯 Meta da Semana — por caixas vendidas</h3>
+    <p style="color:var(--marrom-3);font-size:14px;margin-bottom:16px">Informe quantas caixas de cada tipo você quer vender na semana. O sistema calcula <b>em tempo real</b> sua receita, custos (variáveis + fixos rateados) e o lucro líquido final.</p>
+
+    <div class="form-row" id="metaCaixasInputs">
+      <!-- 3 inputs de caixas serão gerados dinamicamente -->
+    </div>
+
+    <table class="sim-tabela" style="margin-top:18px">
+      <thead>
+        <tr>
+          <th style="width:40px"></th>
+          <th>Categoria</th>
+          <th style="width:100px">Tipo</th>
+          <th style="width:140px">Valor (R$)</th>
+          <th style="width:100px">% da Meta</th>
+        </tr>
+      </thead>
+      <tbody id="metaBreakdown"></tbody>
+    </table>
+
+    <div class="sim-destaque">
+      <div>
+        <div class="lbl">🔻 Lucro Bruto Semanal</div>
+        <div class="val" id="metaLucroBruto" style="color:var(--dourado-claro)">R$ 0,00</div>
+        <div class="sub">Receita − custo produto − comissão variável</div>
+      </div>
+      <div class="lado">
+        <div style="font-size:11px;color:var(--dourado-claro);text-transform:uppercase;letter-spacing:1px">✅ Lucro Líquido Semanal</div>
+        <div class="v" id="metaLucro">R$ 0,00</div>
+        <div style="font-size:11px;color:var(--creme-2);margin-top:4px" id="metaMargem">Margem: 0%</div>
+      </div>
+    </div>
+
+    <div style="margin-top:14px;padding:14px;background:rgba(212,175,55,.08);border:1px dashed var(--dourado);border-radius:10px">
+      <div class="row between" style="font-size:13px;color:var(--marrom-3)">
+        <span>📌 <b>Ponto de Equilíbrio Semanal</b> (mínimo para não dar prejuízo)</span>
+        <b id="metaEquilibrio" style="color:var(--dourado-escuro);font-size:18px">R$ 0,00</b>
+      </div>
+      <small id="metaEquilibrioSub" style="display:block;margin-top:6px;font-size:11px;color:var(--marrom-suave);font-style:italic">Custos fixos ÷ margem bruta. Vendendo abaixo disso, você fica no vermelho.</small>
+    </div>
+  </div>
+
   <!-- ================ SIMULADOR DE PROJEÇÃO ================ -->
   <div class="simulador-card">
-    <h3>🧮 Simulador de Projeção</h3>
-    <p style="color:var(--marrom-3);font-size:14px;margin-bottom:16px">Defina seus valores médios e veja quanto vai faturar por dia, semana, mês e ano. Use para testar cenários: <i>"Se eu vender X por dia, quanto sobra no fim do mês?"</i></p>
+    <h3>🧮 Simulador de Projeção — por caixas vendidas</h3>
+    <p style="color:var(--marrom-3);font-size:14px;margin-bottom:16px">Informe quantas caixas de cada tipo você planeja vender <b>por semana</b> e veja quanto fatura e lucra por semana, mês e ano.</p>
+
+    <div class="form-row" id="simCaixasInputs">
+      <!-- Inputs de caixas serão gerados dinamicamente -->
+    </div>
 
     <div class="form-row">
-      <div>
-        <label>💵 Venda média (R$)</label>
-        <div style="display:flex;gap:6px;align-items:stretch">
-          <input id="simVenda" type="number" step="0.01" min="0" value="0" oninput="calcularSimulador()" style="flex:2;min-width:0">
-          <select id="simVendaPer" onchange="calcularSimulador()" style="flex:1;min-width:0">
-            <option value="dia" selected>/dia</option>
-            <option value="semana">/semana</option>
-            <option value="mes">/mês</option>
-          </select>
-        </div>
-        <small id="simVendaConv" style="font-size:11px;color:var(--dourado-escuro);margin-top:4px;display:block;font-weight:600"></small>
-      </div>
-      <div>
-        <label>📅 Dias trabalhados/semana</label>
-        <input id="simDias" type="number" step="1" min="1" max="7" value="6" oninput="calcularSimulador()">
-      </div>
-      <div>
-        <label>📦 Custo do produto (% sobre venda)</label>
-        <div style="display:flex;gap:6px;align-items:stretch">
-          <input id="simCusto" type="number" step="0.1" min="0" max="100" value="30" oninput="calcularSimulador()" style="flex:2;min-width:0">
-          <button type="button" onclick="aplicarCustoMedioProdutos()" title="Calcular automaticamente do cadastro de produtos" class="btn btn-gold btn-sm" style="flex:1;min-width:0;padding:6px 4px;font-size:11px;white-space:nowrap">🔄 Auto</button>
-        </div>
-        <small id="simCustoInfo" style="font-size:11px;color:var(--dourado-escuro);margin-top:4px;display:block;font-weight:600"></small>
-      </div>
-      <div>
-        <label>💰 Comissão (% sobre venda)</label>
-        <input id="simCom" type="number" step="0.1" min="0" max="100" value="0" oninput="calcularSimulador()">
-      </div>
       <div>
         <label>📆 Semanas trabalhadas/mês</label>
         <input id="simSemTrab" type="number" step="0.5" min="0" max="5" value="4" oninput="calcularSimulador()">
         <small style="font-size:11px;color:var(--marrom-suave);margin-top:4px;display:block">Ex.: 3 = trabalha 3 sem. e descansa 1 (mês cheio = 4,34)</small>
+      </div>
+      <div>
+        <label>💰 Comissão (% sobre venda)</label>
+        <input id="simCom" type="number" step="0.1" min="0" max="100" value="0" oninput="calcularSimulador()">
+        <small style="font-size:11px;color:var(--marrom-suave);margin-top:4px;display:block">% adicional sobre o total vendido</small>
       </div>
       <div>
         <label>🏢 Custos fixos (R$)</label>
@@ -1025,6 +1083,8 @@
         <small id="simFixosConv" style="font-size:11px;color:var(--dourado-escuro);margin-top:4px;display:block;font-weight:600"></small>
       </div>
     </div>
+
+    <div id="simResumoSemana" style="margin:14px 0;padding:14px;background:linear-gradient(135deg,var(--creme-2),var(--creme));border:1px dashed var(--dourado);border-radius:10px;font-size:14px"></div>
 
     <div class="row" style="margin-bottom:14px;flex-wrap:wrap">
       <button type="button" class="btn btn-primary" onclick="preencherSimuladorComSemana()">📅 Usar dados da SEMANA atual</button>
@@ -2735,6 +2795,21 @@ function calcVendas(vendas){
   return {bruto, custo, com, liq: bruto-custo-com, qtd: vendas.length, ticket: vendas.length>0 ? bruto/vendas.length : 0};
 }
 
+/* Retorna custos fixos por categoria (rateados pelo divisor:
+   30.42 para dia, 4.345 para semana, 1 para mês). */
+function fixosPorCategoria(divisor){
+  const fixos = (DB.custosFixos||[]).filter(f=>f.ativo);
+  let mao=0, transp=0, comFixa=0, proLab=0;
+  fixos.forEach(f=>{
+    const v = (+f.valor||0) / divisor;
+    if(f.categoria==='maoObra')         mao += v;
+    else if(f.categoria==='transporte') transp += v;
+    else if(f.categoria==='comissao')   comFixa += v;
+    else if(f.categoria==='proLabore')  proLab += v;
+  });
+  return {mao, transp, comFixa, proLab, total: mao+transp+comFixa+proLab};
+}
+
 function dashboard(){
   const hojeIni = inicioHojeISO();
   const semIni = inicioSemanaISO(0);
@@ -2748,26 +2823,50 @@ function dashboard(){
   const s = calcVendas(vendasSemana);
   const m = calcVendas(vendasMes);
 
+  // ========== Rateio dos custos fixos ==========
+  const fixDia = fixosPorCategoria(30.42);
+  const fixSem = fixosPorCategoria(SEMANAS_POR_MES);
+  const fixMes = fixosPorCategoria(1);
+
   // ========== HOJE ==========
   const hoje = new Date();
   document.getElementById('hojeData').textContent = hoje.toLocaleDateString('pt-BR',{weekday:'short',day:'2-digit',month:'short'});
   document.getElementById('hojeBruto').textContent = h.bruto.toFixed(2).replace('.',',');
-  document.getElementById('hojeLiq').textContent = fmt(h.liq);
   document.getElementById('hojeQtd').textContent = h.qtd;
   document.getElementById('hojeTicket').textContent = fmt(h.ticket);
-  document.getElementById('hojeCusto').textContent = fmt(h.custo + h.com);
+  document.getElementById('hojeCusto').textContent = fmt(h.custo);
+  document.getElementById('hojeComVar').textContent = fmt(h.com);
+  document.getElementById('hojeLucroBruto').textContent = fmt(h.liq);
+  document.getElementById('hojeFixoMao').textContent = fmt(fixDia.mao);
+  document.getElementById('hojeFixoTransp').textContent = fmt(fixDia.transp);
+  document.getElementById('hojeFixoCom').textContent = fmt(fixDia.comFixa);
+  document.getElementById('hojeFixoPro').textContent = fmt(fixDia.proLab);
+  const hojeLiquido = h.liq - fixDia.total;
+  const elHojeLiq = document.getElementById('hojeLiq');
+  elHojeLiq.textContent = fmt(hojeLiquido);
+  elHojeLiq.style.color = hojeLiquido >= 0 ? 'var(--verde)' : 'var(--vermelho)';
 
   // ========== SEMANA ==========
   const semDate = new Date(semIni);
   const semFim = new Date(semDate); semFim.setDate(semFim.getDate()+6);
   document.getElementById('semanaData').textContent = `${semDate.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})} → ${semFim.toLocaleDateString('pt-BR',{day:'2-digit',month:'2-digit'})}`;
   document.getElementById('semanaBruto').textContent = s.bruto.toFixed(2).replace('.',',');
-  document.getElementById('semanaLiq').textContent = fmt(s.liq);
   document.getElementById('semanaQtd').textContent = s.qtd;
 
   // dias decorridos na semana (incluindo hoje)
   const diasNaSem = Math.min(7, Math.floor((Date.now()-semDate.getTime())/86400000)+1);
   document.getElementById('semanaMedia').textContent = fmt(s.bruto/Math.max(diasNaSem,1));
+  document.getElementById('semanaCusto').textContent = fmt(s.custo);
+  document.getElementById('semanaComVar').textContent = fmt(s.com);
+  document.getElementById('semanaLucroBruto').textContent = fmt(s.liq);
+  document.getElementById('semanaFixoMao').textContent = fmt(fixSem.mao);
+  document.getElementById('semanaFixoTransp').textContent = fmt(fixSem.transp);
+  document.getElementById('semanaFixoCom').textContent = fmt(fixSem.comFixa);
+  document.getElementById('semanaFixoPro').textContent = fmt(fixSem.proLab);
+  const semanaLiquido = s.liq - fixSem.total;
+  const elSemLiq = document.getElementById('semanaLiq');
+  elSemLiq.textContent = fmt(semanaLiquido);
+  elSemLiq.style.color = semanaLiquido >= 0 ? 'var(--verde)' : 'var(--vermelho)';
 
   // mini barras dos dias da semana
   const diasNomes = ['Seg','Ter','Qua','Qui','Sex','Sáb','Dom'];
@@ -2791,9 +2890,19 @@ function dashboard(){
   const mesNome = hoje.toLocaleDateString('pt-BR',{month:'long',year:'numeric'});
   document.getElementById('mesData').textContent = mesNome.charAt(0).toUpperCase() + mesNome.slice(1);
   document.getElementById('mesBruto').textContent = m.bruto.toFixed(2).replace('.',',');
-  document.getElementById('mesLiq').textContent = fmt(m.liq);
   document.getElementById('mesQtd').textContent = m.qtd;
   document.getElementById('mesTicket').textContent = fmt(m.ticket);
+  document.getElementById('mesCusto').textContent = fmt(m.custo);
+  document.getElementById('mesComVar').textContent = fmt(m.com);
+  document.getElementById('mesLucroBruto').textContent = fmt(m.liq);
+  document.getElementById('mesFixoMao').textContent = fmt(fixMes.mao);
+  document.getElementById('mesFixoTransp').textContent = fmt(fixMes.transp);
+  document.getElementById('mesFixoCom').textContent = fmt(fixMes.comFixa);
+  document.getElementById('mesFixoPro').textContent = fmt(fixMes.proLab);
+  const mesLiquido = m.liq - fixMes.total;
+  const elMesLiq = document.getElementById('mesLiq');
+  elMesLiq.textContent = fmt(mesLiquido);
+  elMesLiq.style.color = mesLiquido >= 0 ? 'var(--dourado-claro)' : '#ff8a8a';
 
   const diasDecor = hoje.getDate();
   const totalDias = new Date(hoje.getFullYear(), hoje.getMonth()+1, 0).getDate();
@@ -2804,6 +2913,57 @@ function dashboard(){
   document.getElementById('mesProjBruto').textContent = fmt(projBruto);
   document.getElementById('mesProjBarFill').style.width = pctMes + '%';
   document.getElementById('mesProjSub').textContent = `Dia ${diasDecor} de ${totalDias} (${pctMes.toFixed(0)}%) • Lucro projetado: ${fmt(projLiq)}`;
+
+  // ========== DETALHAMENTO DE CUSTOS (HOJE / SEMANA) ==========
+  function detalharCustos(vendas, divisorFixos){
+    // Custos variáveis (do que foi vendido)
+    const custoMerc = vendas.reduce((s,v)=>s+(+v.custo||0),0);
+    const comissao  = vendas.reduce((s,v)=>s+(+v.comissao||0),0);
+    // Custos fixos por categoria, rateados pro período
+    const fixos = (DB.custosFixos||[]).filter(f=>f.ativo);
+    let mao=0, transp=0, comFixa=0, proLab=0;
+    fixos.forEach(f=>{
+      const v = (+f.valor||0) / divisorFixos;
+      if(f.categoria==='maoObra')        mao += v;
+      else if(f.categoria==='transporte')transp += v;
+      else if(f.categoria==='comissao')  comFixa += v;
+      else if(f.categoria==='proLabore') proLab += v;
+    });
+    const total = custoMerc + comissao + mao + transp + comFixa + proLab;
+
+    const linha = (icone, lbl, val, cor) => {
+      const pct = total>0 ? (val/total*100) : 0;
+      return `<div style="margin-bottom:9px">
+        <div style="display:flex;justify-content:space-between;align-items:baseline;font-size:13px;margin-bottom:3px">
+          <span style="color:var(--marrom-2)"><span style="font-size:14px;margin-right:4px">${icone}</span>${lbl}</span>
+          <span><b style="color:${cor}">${fmt(val)}</b> <small style="color:var(--marrom-suave);font-size:11px">${pct.toFixed(1)}%</small></span>
+        </div>
+        <div class="barra-progresso" style="height:6px"><div style="width:${pct}%;background:${cor}"></div></div>
+      </div>`;
+    };
+
+    let html = '';
+    // Variáveis (atualizam por venda)
+    html += '<div style="font-size:10px;color:var(--dourado-escuro);font-weight:700;letter-spacing:1.5px;margin-bottom:8px;text-transform:uppercase">— Custos variáveis (das vendas) —</div>';
+    html += linha('🍬','Material/Receita',         custoMerc, 'var(--dourado-escuro)');
+    html += linha('💰','Comissão dos vendedores',  comissao,  'var(--dourado)');
+    // Fixos rateados
+    html += '<div style="font-size:10px;color:var(--marrom-3);font-weight:700;letter-spacing:1.5px;margin:14px 0 8px;text-transform:uppercase">— Custos fixos (rateio) —</div>';
+    html += linha('👷','Mão de obra',         mao,     'var(--marrom-3)');
+    html += linha('🚚','Transporte',          transp,  'var(--marrom-suave)');
+    html += linha('💵','Comissão fixa',       comFixa, '#A0826D');
+    html += linha('👔','Pró-labore',          proLab,  '#8B7355');
+    // Total
+    html += `<div style="border-top:2px solid var(--dourado);padding-top:12px;margin-top:14px;background:var(--creme);border-radius:8px;padding:14px;margin-left:-4px;margin-right:-4px">
+      <div style="display:flex;justify-content:space-between;font-size:15px;font-weight:700;align-items:center">
+        <span style="color:var(--marrom-1)">📌 TOTAL DE CUSTOS</span>
+        <span style="color:var(--vermelho);font-size:20px">${fmt(total)}</span>
+      </div>
+    </div>`;
+    return html;
+  }
+  document.getElementById('custosDetalhadosHoje').innerHTML   = detalharCustos(vendasHoje,   30.42);
+  document.getElementById('custosDetalhadosSemana').innerHTML = detalharCustos(vendasSemana, SEMANAS_POR_MES);
 
   // ========== TOP PRODUTOS ==========
   const cont2 = document.getElementById('topProdutos');
@@ -3128,13 +3288,427 @@ function atualizarDatalists(){
 function refresh(){
   renderInsumos(); renderCustos(); renderFixos(); renderProdutos(); renderPromos(); renderCaixa(); renderDespesas(); renderVendas(); renderVendedores(); dashboard(); renderRelatorio();
   renderComposicaoTemp(); renderReceitaTemp(); atualizarChoiceStats(); atualizarDatalists();
+  if(typeof renderMetaInputs === 'function') renderMetaInputs();
+  if(typeof renderSimuladorInputs === 'function') renderSimuladorInputs();
 }
 
 /* ============== SIMULADOR DE PROJEÇÃO ============== */
 const SEMANAS_POR_MES = 4.345;   // 30.42 dias / 7
 
+/* META DA SEMANA — recebe quantidades de caixas e mostra lucro bruto + líquido */
+window.metaCaixasState = window.metaCaixasState || {};
+
+function renderMetaInputs(){
+  const cont = document.getElementById('metaCaixasInputs');
+  if(!cont) return;
+  // Reusa a função do simulador que pega tipos de caixa pelos produtos
+  const tipos = (typeof tiposDeCaixaDisponiveis === 'function') ? tiposDeCaixaDisponiveis() : [];
+  if(!tipos.length){
+    cont.innerHTML = '<div style="grid-column:1/-1;padding:14px;background:var(--creme-2);border-radius:8px;color:var(--marrom-3);font-size:13px">⚠️ Cadastre produtos com <b>Quantidade de Doces</b> em "Produtos" para usar a meta semanal.</div>';
+    return;
+  }
+  cont.innerHTML = tipos.map(t => {
+    const valorAtual = +(window.metaCaixasState[t.qtdDoces] || 0);
+    return `<div>
+      <label>📦 Caixa ${t.qtdDoces} doces / semana</label>
+      <input type="number" step="1" min="0" value="${valorAtual}" oninput="atualizarMetaCaixa(${t.qtdDoces}, this.value)" id="metaCx${t.qtdDoces}">
+      <small style="font-size:11px;color:var(--dourado-escuro);margin-top:4px;display:block;font-weight:600">${t.produto.nome} • ${fmt(t.preco)} cada</small>
+    </div>`;
+  }).join('');
+}
+
+function atualizarMetaCaixa(qtdDoces, valor){
+  if(!window.metaCaixasState) window.metaCaixasState = {};
+  window.metaCaixasState[qtdDoces] = +valor || 0;
+  calcularMetaSemana();
+}
+
+function calcularMetaSemana(){
+  // Garante que o estado existe e os inputs estão renderizados
+  if(typeof tiposDeCaixaDisponiveis !== 'function') return;
+  const tipos = tiposDeCaixaDisponiveis();
+
+  // Calcular meta (receita semanal) baseada nas caixas
+  let meta = 0;
+  let custoMercSemana = 0;
+  let totalCxSem = 0;
+  let pctComMedio = 0;
+  const detalhesPorTipo = [];
+  tipos.forEach(t => {
+    const qtd = +(window.metaCaixasState[t.qtdDoces] || 0);
+    if(qtd <= 0) return;
+    const subBruto = qtd * t.preco;
+    const subCusto = qtd * t.custo;
+    meta += subBruto;
+    custoMercSemana += subCusto;
+    totalCxSem += qtd;
+    pctComMedio += subBruto * (+t.produto.comissao || 0) / 100;
+    detalhesPorTipo.push({tipo: t, qtd, subBruto, subCusto});
+  });
+
+  const pctCusto = meta > 0 ? (custoMercSemana / meta * 100) : 0;
+  const pctCom = meta > 0 ? (pctComMedio / meta * 100) : 0;
+
+  // Custos fixos por categoria — rateio semanal
+  const fixSem = (typeof fixosPorCategoria === 'function')
+    ? fixosPorCategoria(SEMANAS_POR_MES)
+    : {mao:0, transp:0, comFixa:0, proLab:0, total:0};
+
+  // Custos variáveis (já calculados das caixas)
+  const custoVar = custoMercSemana;
+  const comVar = pctComMedio;
+
+  const lucroBruto = meta - custoVar - comVar;
+  const totalCusto = custoVar + comVar + fixSem.total;
+  const lucro = meta - totalCusto;
+  const margem = meta>0 ? (lucro/meta*100) : 0;
+
+  // ========= TABELA =========
+  const tb = document.getElementById('metaBreakdown');
+  if(!tb) return;
+  const linha = (icone, lbl, tipo, val, cor, tipoCor) => {
+    const pct = meta>0 ? (val/meta*100) : 0;
+    return `<tr>
+      <td style="text-align:center;font-size:18px">${icone}</td>
+      <td><b>${lbl}</b></td>
+      <td><span class="badge" style="background:${tipoCor};color:#fff;font-size:10px">${tipo}</span></td>
+      <td style="color:${cor};font-weight:700">${fmt(val)}</td>
+      <td style="font-weight:600">${pct.toFixed(1)}%</td>
+    </tr>`;
+  };
+  let html = '';
+  // Receita por tipo de caixa
+  detalhesPorTipo.forEach(d => {
+    const pct = meta>0 ? (d.subBruto/meta*100) : 0;
+    html += `<tr style="background:rgba(212,175,55,.08)">
+      <td style="text-align:center;font-size:18px">📦</td>
+      <td><b>${d.qtd}× ${d.tipo.produto.nome}</b> <small style="color:var(--marrom-suave)">(${d.tipo.qtdDoces} doces)</small></td>
+      <td><span class="badge badge-gold" style="font-size:10px">RECEITA</span></td>
+      <td style="color:var(--verde);font-weight:700">+ ${fmt(d.subBruto)}</td>
+      <td style="font-weight:600">${pct.toFixed(1)}%</td>
+    </tr>`;
+  });
+  if(detalhesPorTipo.length){
+    html += `<tr style="background:rgba(212,175,55,.18);font-weight:700"><td></td><td>TOTAL RECEITA / META</td><td></td><td style="color:var(--verde)">${fmt(meta)}</td><td>100%</td></tr>`;
+  }
+  // Custos variáveis
+  html += linha('🍬','Material/Receita do Produto', 'VARIÁVEL', -custoVar, 'var(--vermelho)', 'var(--marrom-3)');
+  html += linha('💰','Comissão dos Vendedores',     'VARIÁVEL', -comVar,   'var(--vermelho)', 'var(--marrom-3)');
+  // Lucro Bruto destacado
+  html += `<tr style="background:rgba(212,175,55,.15);font-weight:700">
+    <td style="text-align:center;font-size:18px">🔻</td>
+    <td><b>LUCRO BRUTO</b> <small style="color:var(--marrom-suave);font-weight:400">(antes dos fixos)</small></td>
+    <td></td>
+    <td style="color:var(--dourado-escuro);font-weight:700;font-size:15px">${fmt(lucroBruto)}</td>
+    <td>${meta>0 ? (lucroBruto/meta*100).toFixed(1) : 0}%</td>
+  </tr>`;
+  // Custos fixos rateados
+  html += linha('👷','Mão de Obra (rateio sem)',   'FIXO', -fixSem.mao,     'var(--vermelho)', '#8B5E3C');
+  html += linha('🚚','Transporte (rateio sem)',    'FIXO', -fixSem.transp,  'var(--vermelho)', '#8B5E3C');
+  html += linha('💵','Comissão Fixa (rateio sem)', 'FIXO', -fixSem.comFixa, 'var(--vermelho)', '#8B5E3C');
+  html += linha('👔','Pró-labore (rateio sem)',    'FIXO', -fixSem.proLab,  'var(--vermelho)', '#8B5E3C');
+  // Lucro Líquido final
+  const corLiq = lucro >= 0 ? 'var(--verde)' : 'var(--vermelho)';
+  html += `<tr style="background:linear-gradient(135deg,var(--marrom-1),var(--marrom-2));color:var(--creme);font-weight:700">
+    <td style="text-align:center;font-size:18px">✅</td>
+    <td style="color:var(--dourado-claro)"><b>LUCRO LÍQUIDO</b> <small style="color:var(--creme-2);font-weight:400">(depois de tudo)</small></td>
+    <td></td>
+    <td style="color:${corLiq};font-weight:700;font-size:16px">${fmt(lucro)}</td>
+    <td style="color:var(--dourado-claro)">${margem.toFixed(1)}%</td>
+  </tr>`;
+  tb.innerHTML = html;
+
+  // ========= TOTAIS =========
+  const elBruto = document.getElementById('metaLucroBruto');
+  if(elBruto){ elBruto.textContent = fmt(lucroBruto); elBruto.style.color = lucroBruto>=0?'var(--dourado-claro)':'#ff8a8a'; }
+
+  const elL = document.getElementById('metaLucro');
+  elL.textContent = fmt(lucro);
+  elL.style.color = lucro>=0 ? 'var(--dourado-claro)' : '#ff8a8a';
+  document.getElementById('metaMargem').textContent = `Margem líquida: ${margem.toFixed(1)}%  •  ${totalCxSem} cx/sem  •  Anual: ${fmt(lucro * SEMANAS_POR_MES * 12)}`;
+
+  // ========= PONTO DE EQUILÍBRIO =========
+  const margBruta = 1 - (pctCusto/100) - (pctCom/100);
+  const equilibrio = margBruta > 0 ? fixSem.total / margBruta : 0;
+  const elEq = document.getElementById('metaEquilibrio');
+  if(elEq) elEq.textContent = fmt(equilibrio);
+  const elEqSub = document.getElementById('metaEquilibrioSub');
+  if(elEqSub) elEqSub.textContent =
+    margBruta > 0
+      ? `Custos fixos (${fmt(fixSem.total)}) ÷ margem bruta (${(margBruta*100).toFixed(1)}%). Abaixo disso = prejuízo.`
+      : '⚠️ Cadastre produtos para calcular ponto de equilíbrio.';
+}
+
+
 /* Calcula o % de custo médio dos produtos cadastrados.
    Soma o custo total e o preço total de todos os produtos com preço > 0
+   e composição definida, retornando a média ponderada. */
+function calcularCustoMedio(){
+  const produtos = DB.produtos.filter(p => p.preco > 0);
+  if(!produtos.length) return null;
+  let totalCusto = 0, totalPreco = 0, comComposicao = 0;
+  produtos.forEach(p=>{
+    const c = custoProduto(p);
+    if(c > 0){
+      totalCusto += c;
+      totalPreco += p.preco;
+      comComposicao++;
+    }
+  });
+  if(totalPreco <= 0 || comComposicao === 0) return null;
+  return {
+    pct: (totalCusto/totalPreco*100),
+    totalCusto, totalPreco, qtdProdutos: comComposicao
+  };
+}
+
+function aplicarCustoMedioProdutos(){
+  const r = calcularCustoMedio();
+  if(!r){ toast('Cadastre produtos com preço e composição primeiro','error'); return; }
+  document.getElementById('simCusto').value = r.pct.toFixed(1);
+  calcularSimulador();
+  toast(`✓ Custo médio: ${r.pct.toFixed(1)}% — base ${r.qtdProdutos} produto(s)`);
+}
+
+/* Retorna lista de "tipos de caixa" disponíveis: produtos agrupados por
+   quantidade de doces (categoria). Pega o produto mais barato de cada
+   categoria como representante. */
+function tiposDeCaixaDisponiveis(){
+  const grupos = {};
+  DB.produtos.forEach(p => {
+    const qd = +p.categoria || 0;
+    if(qd <= 0 || !p.preco) return;
+    if(!grupos[qd]) grupos[qd] = [];
+    grupos[qd].push(p);
+  });
+  return Object.keys(grupos).sort((a,b)=>(+a)-(+b)).map(qd => {
+    const produtos = grupos[qd];
+    // Usa primeiro produto como representante
+    const p = produtos[0];
+    return {
+      qtdDoces: +qd,
+      produto: p,
+      preco: p.preco,
+      custo: custoProduto(p),
+      totalProdutos: produtos.length
+    };
+  });
+}
+
+/* Renderiza os inputs de caixas dinamicamente baseado nos produtos cadastrados. */
+function renderSimuladorInputs(){
+  const cont = document.getElementById('simCaixasInputs');
+  if(!cont) return;
+  const tipos = tiposDeCaixaDisponiveis();
+  if(!tipos.length){
+    cont.innerHTML = '<div style="grid-column:1/-1;padding:14px;background:var(--creme-2);border-radius:8px;color:var(--marrom-3);font-size:13px">⚠️ Cadastre produtos com <b>Quantidade de Doces</b> em "Produtos" para usar o simulador.</div>';
+    return;
+  }
+  cont.innerHTML = tipos.map(t => {
+    const valorAtual = +(window.simCaixasState && window.simCaixasState[t.qtdDoces] || 0);
+    return `<div>
+      <label>📦 Caixa ${t.qtdDoces} doces / semana</label>
+      <input type="number" step="1" min="0" value="${valorAtual}"
+        oninput="atualizarSimCaixa(${t.qtdDoces}, this.value)"
+        data-qd="${t.qtdDoces}" id="simCx${t.qtdDoces}">
+      <small style="font-size:11px;color:var(--dourado-escuro);margin-top:4px;display:block;font-weight:600">
+        ${t.produto.nome} • ${fmt(t.preco)} cada
+      </small>
+    </div>`;
+  }).join('');
+}
+
+window.simCaixasState = window.simCaixasState || {};
+
+function atualizarSimCaixa(qtdDoces, valor){
+  if(!window.simCaixasState) window.simCaixasState = {};
+  window.simCaixasState[qtdDoces] = +valor || 0;
+  calcularSimulador();
+}
+
+function calcularSimulador(){
+  const semTrab    = Math.max(0.1, +document.getElementById('simSemTrab').value || 4);
+  const pctCom     = +document.getElementById('simCom').value || 0;
+  const fixosInput = +document.getElementById('simFixos').value || 0;
+  const fixosPer   = document.getElementById('simFixosPer').value;
+
+  let fixosMensal;
+  if(fixosPer === 'dia')         fixosMensal = fixosInput * 30.42;
+  else if(fixosPer === 'semana') fixosMensal = fixosInput * SEMANAS_POR_MES;
+  else                            fixosMensal = fixosInput;
+
+  const convF = document.getElementById('simFixosConv');
+  if(convF){
+    if(fixosInput>0){
+      const fSem = fixosMensal / SEMANAS_POR_MES;
+      const fDia = fixosMensal / 30.42;
+      const partes = [];
+      if(fixosPer !== 'dia')    partes.push(`${fmt(fDia)}/dia`);
+      if(fixosPer !== 'semana') partes.push(`${fmt(fSem)}/sem`);
+      if(fixosPer !== 'mes')    partes.push(`${fmt(fixosMensal)}/mês`);
+      convF.textContent = '≈ ' + partes.join(' • ');
+    } else convF.textContent = '';
+  }
+
+  // Computar receita e custo SEMANAL a partir das quantidades de caixas
+  const tipos = tiposDeCaixaDisponiveis();
+  let brutoSemana = 0, custoMercSemana = 0, totalCxSem = 0;
+  const detalhesPorTipo = [];
+  tipos.forEach(t => {
+    const qtd = +(window.simCaixasState && window.simCaixasState[t.qtdDoces] || 0);
+    if(qtd<=0) return;
+    const subBruto = qtd * t.preco;
+    const subCusto = qtd * t.custo;
+    brutoSemana += subBruto;
+    custoMercSemana += subCusto;
+    totalCxSem += qtd;
+    detalhesPorTipo.push({tipo: t, qtd, subBruto, subCusto});
+  });
+
+  const brutoMes = brutoSemana * semTrab;
+  const custoMercMes = custoMercSemana * semTrab;
+  const brutoAno = brutoMes * 12;
+  const custoMercAno = custoMercMes * 12;
+
+  // Resumo da semana
+  const resumoEl = document.getElementById('simResumoSemana');
+  if(resumoEl){
+    if(detalhesPorTipo.length){
+      resumoEl.innerHTML = `<div style="font-size:13px;color:var(--marrom-3);margin-bottom:8px"><b>📋 Detalhes da semana:</b></div>` +
+        detalhesPorTipo.map(d => `<div style="display:flex;justify-content:space-between;padding:3px 0;font-size:13px">
+          <span>${d.qtd}× <b>${d.tipo.produto.nome}</b> (${d.tipo.qtdDoces} doces)</span>
+          <span>${d.qtd} × ${fmt(d.tipo.preco)} = <b style="color:var(--dourado-escuro)">${fmt(d.subBruto)}</b></span>
+        </div>`).join('') +
+        `<div style="display:flex;justify-content:space-between;padding-top:8px;margin-top:8px;border-top:1px dashed var(--dourado);font-size:14px;font-weight:700">
+          <span>TOTAL: ${totalCxSem} caixa(s)/semana</span>
+          <span style="color:var(--dourado-escuro)">${fmt(brutoSemana)}</span>
+        </div>`;
+    } else {
+      resumoEl.innerHTML = '<div style="text-align:center;color:var(--marrom-suave);font-style:italic;font-size:13px">Informe a quantidade de caixas que pretende vender por semana acima.</div>';
+    }
+  }
+
+  // Tabela por período
+  const linha = (nome, bruto, custoMerc, fixos, totalCx, destaque) => {
+    const com = bruto * (pctCom/100);
+    const liq = bruto - custoMerc - com - fixos;
+    const cor = liq>=0 ? 'var(--verde)' : 'var(--vermelho)';
+    const cls = destaque ? ' class="destaque"' : '';
+    return `<tr${cls}>
+      <td><b>${nome}</b><br><small style="color:var(--marrom-suave);font-weight:400">${totalCx.toFixed(0)} cx</small></td>
+      <td>${fmt(bruto)}</td>
+      <td style="color:var(--vermelho)">- ${fmt(custoMerc)}</td>
+      <td style="color:var(--vermelho)">- ${fmt(com)}</td>
+      <td style="color:var(--vermelho)">- ${fmt(fixos)}</td>
+      <td><b style="color:${cor}">${fmt(liq)}</b></td>
+    </tr>`;
+  };
+
+  const fixosSemana = fixosMensal / SEMANAS_POR_MES;
+  const fixosAno = fixosMensal * 12;
+  const totalCxMes = totalCxSem * semTrab;
+  const totalCxAno = totalCxMes * 12;
+
+  document.getElementById('simResultado').innerHTML =
+    linha('🗓️ Por SEMANA', brutoSemana, custoMercSemana, fixosSemana, totalCxSem) +
+    linha('📊 Por MÊS',    brutoMes,    custoMercMes,    fixosMensal,  totalCxMes, true) +
+    linha('🗓️ Por ANO',    brutoAno,    custoMercAno,    fixosAno,     totalCxAno);
+
+  const comissaoMes = brutoMes * (pctCom/100);
+  const liqMes = brutoMes - custoMercMes - comissaoMes - fixosMensal;
+  const liqAno = liqMes * 12;
+  const margem = brutoMes>0 ? (liqMes/brutoMes*100).toFixed(1) : 0;
+  const corMes = liqMes>=0 ? 'var(--dourado-claro)' : '#ff8a8a';
+
+  const elMes = document.getElementById('simLucroMes');
+  elMes.textContent = fmt(liqMes);
+  elMes.style.color = corMes;
+  document.getElementById('simMargemMes').textContent = `Margem: ${margem}% • ${totalCxMes.toFixed(0)} cx/mês • Bruto: ${fmt(brutoMes)}`;
+  const elAno = document.getElementById('simLucroAno');
+  elAno.textContent = fmt(liqAno);
+  elAno.style.color = corMes;
+  document.getElementById('simReceitaAno').textContent = `Receita anual: ${fmt(brutoAno)} • ${totalCxAno.toFixed(0)} caixas/ano`;
+}
+
+function resetarSimulador(){
+  window.simCaixasState = {};
+  document.getElementById('simSemTrab').value = 4;
+  document.getElementById('simCom').value = 0;
+  document.getElementById('simFixos').value = 0;
+  document.getElementById('simFixosPer').value = 'mes';
+  renderSimuladorInputs();
+  calcularSimulador();
+}
+
+/* Preenche os inputs com a quantidade de caixas vendidas em um período. */
+function preencherSimuladorComVendas(vendas, divisorSemanas, label){
+  if(!vendas.length){ toast(`Nenhuma venda em ${label}`,'error'); return; }
+  // Conta caixas por categoria (qtd doces) baseado nos itens das vendas
+  const contagem = {};
+  vendas.forEach(v => {
+    (v.itens||[]).forEach(it => {
+      const prod = DB.produtos.find(p => p.id === it.id);
+      if(!prod) return;
+      const qd = +prod.categoria || 0;
+      if(qd <= 0) return;
+      contagem[qd] = (contagem[qd]||0) + (+it.qtd||0);
+    });
+  });
+  // Divide pela quantidade de semanas no período pra ter média/semana
+  window.simCaixasState = {};
+  Object.keys(contagem).forEach(qd => {
+    window.simCaixasState[qd] = Math.round(contagem[qd] / Math.max(1, divisorSemanas));
+  });
+  const fixosMensal = (DB.custosFixos||[]).filter(f=>f.ativo).reduce((s,f)=>s+(+f.valor||0),0);
+  document.getElementById('simFixos').value = fixosMensal.toFixed(2);
+  document.getElementById('simFixosPer').value = 'mes';
+  renderSimuladorInputs();
+  calcularSimulador();
+  toast(`✓ Preenchido com ${label} (${vendas.length} vendas)`);
+}
+
+function preencherSimuladorComSemana(){
+  const semIni = inicioSemanaISO(0);
+  const vendasSemana = DB.vendas.filter(v=>v.data>=semIni);
+  preencherSimuladorComVendas(vendasSemana, 1, 'esta semana');
+}
+
+function preencherSimuladorComMedias(){
+  const de = document.getElementById('rDe').value || '1900-01-01';
+  const ate = document.getElementById('rAte').value || '2999-12-31';
+  const vendas = DB.vendas.filter(v=>{ const d = v.data.split('T')[0]; return d>=de && d<=ate; });
+  const dDe = new Date(de+'T00:00:00');
+  const dAte = new Date(ate+'T23:59:59');
+  const totalDias = Math.max(1, Math.floor((dAte-dDe)/86400000)+1);
+  const semanas = Math.max(1, totalDias/7);
+  preencherSimuladorComVendas(vendas, semanas, `período do filtro (${semanas.toFixed(1)} sem)`);
+}
+
+function init(){
+  carregar();
+  document.getElementById('dataAtual').textContent = new Date().toLocaleDateString('pt-BR',{weekday:'long',year:'numeric',month:'long',day:'numeric'});
+  const despDataEl = document.getElementById('despData');
+  if(despDataEl) despDataEl.value = hoje();
+  document.getElementById('rDe').value = inicioMes();
+  document.getElementById('rAte').value = hoje();
+  document.getElementById('vDe').value = inicioMes();
+  document.getElementById('vAte').value = hoje();
+  document.getElementById('negNome').value = DB.negocio.nome||'';
+  document.getElementById('negCnpj').value = DB.negocio.cnpj||'';
+  document.getElementById('negTel').value = DB.negocio.tel||'';
+  if(DB.negocio.nome){ document.querySelector('header h1').firstChild.textContent = DB.negocio.nome + ' '; }
+  refresh();
+  if(typeof renderSimuladorInputs === 'function') renderSimuladorInputs();
+  if(typeof calcularSimulador === 'function') calcularSimulador();
+  if(typeof renderMetaInputs === 'function') renderMetaInputs();
+  if(typeof calcularMetaSemana === 'function') calcularMetaSemana();
+}
+init();
+</script>
+</body>
+</html>
+<!--
+preço > 0
    e composição definida, retornando a média ponderada. */
 function calcularCustoMedio(){
   const produtos = DB.produtos.filter(p => p.preco > 0);
@@ -3403,6 +3977,7 @@ function init(){
   }
   // Calcula simulador inicial (com valores padrão)
   if(typeof calcularSimulador === 'function') calcularSimulador();
+  if(typeof calcularMetaSemana === 'function') calcularMetaSemana();
 }
 init();
 </script>
