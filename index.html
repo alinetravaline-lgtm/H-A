@@ -546,6 +546,17 @@
       <div class="totais">
         <div class="linha"><span>Subtotal:</span><span id="subtotal">R$ 0,00</span></div>
         <div class="linha"><span>Desconto/Promoção:</span><span id="descontoTotal">- R$ 0,00</span></div>
+        <div class="linha" style="border-top:1px dashed var(--marrom-3);padding-top:8px;margin-top:4px">
+          <span>🎁 Desconto manual:</span>
+          <div style="display:flex;gap:4px;align-items:center">
+            <input id="descontoManual" type="number" step="0.01" min="0" value="0" oninput="renderCarrinho()" style="width:80px;padding:4px 6px;font-size:13px;text-align:right;background:var(--marrom-2);color:var(--creme);border:1px solid var(--dourado);border-radius:6px">
+            <select id="descontoManualTipo" onchange="renderCarrinho()" style="padding:4px 6px;font-size:13px;background:var(--marrom-2);color:var(--creme);border:1px solid var(--dourado);border-radius:6px">
+              <option value="valor">R$</option>
+              <option value="percent">%</option>
+            </select>
+          </div>
+        </div>
+        <div class="linha" style="font-size:12px;color:var(--marrom-suave)" id="linhaDescManualValor"></div>
         <div class="linha"><span>Comissão (estim.):</span><span id="comissaoEst">R$ 0,00</span></div>
         <div class="linha total"><span>TOTAL:</span><span id="totalCaixa">R$ 0,00</span></div>
       </div>
@@ -558,6 +569,10 @@
           <label style="color:var(--creme-2)">Vendedor</label>
           <select id="vendedorCaixa"></select>
         </div>
+      </div>
+      <div style="margin-top:8px">
+        <label style="color:var(--creme-2);font-size:11px">📝 Motivo do desconto (opcional)</label>
+        <input id="descontoMotivo" type="text" placeholder="Ex.: Cliente fiel, ajuste de troco" style="background:var(--marrom-2);color:var(--creme);border:1px solid var(--marrom-3);font-size:12px">
       </div>
       <div class="row" style="margin-top:14px">
         <button class="btn btn-ghost" style="flex:1;color:var(--creme);border-color:var(--dourado)" onclick="limparCarrinho()">Limpar</button>
@@ -2466,7 +2481,14 @@ function alterarQtd(idx,delta){
   salvar(); renderCarrinho();
 }
 function removerItem(idx){ DB.carrinho.splice(idx,1); salvar(); renderCarrinho(); }
-function limparCarrinho(){ DB.carrinho = []; salvar(); renderCarrinho(); }
+function limparCarrinho(){
+  DB.carrinho = [];
+  // Reseta também o desconto manual e motivo
+  const dm = document.getElementById('descontoManual'); if(dm) dm.value = 0;
+  const dt = document.getElementById('descontoManualTipo'); if(dt) dt.value = 'valor';
+  const dmot = document.getElementById('descontoMotivo'); if(dmot) dmot.value = '';
+  salvar(); renderCarrinho();
+}
 
 function calcularPromos(){
   // retorna {bruto, desconto, itens (com promo aplicada)}
@@ -2489,6 +2511,20 @@ function calcularPromos(){
   });
   return {bruto, desconto, itens};
 }
+/* Calcula o desconto manual aplicado ao subtotal (após promoções).
+   Pode ser em R$ ou em %. Limita ao valor máximo do subtotal. */
+function calcularDescontoManual(subtotalComPromo){
+  const inp = document.getElementById('descontoManual');
+  const tipoSel = document.getElementById('descontoManualTipo');
+  if(!inp || !tipoSel) return 0;
+  const val = +inp.value || 0;
+  if(val <= 0) return 0;
+  const tipo = tipoSel.value;
+  let desc = tipo === 'percent' ? subtotalComPromo * (val/100) : val;
+  if(desc > subtotalComPromo) desc = subtotalComPromo;
+  return desc;
+}
+
 function renderCarrinho(){
   const cont = document.getElementById('carrinho');
   if(!DB.carrinho.length){
@@ -2497,6 +2533,8 @@ function renderCarrinho(){
     document.getElementById('descontoTotal').textContent = '- '+fmt(0);
     document.getElementById('comissaoEst').textContent = fmt(0);
     document.getElementById('totalCaixa').textContent = fmt(0);
+    const elDM = document.getElementById('linhaDescManualValor');
+    if(elDM) elDM.innerHTML = '';
     return;
   }
   const calc = calcularPromos();
@@ -2517,7 +2555,11 @@ function renderCarrinho(){
     </div>`;
   }).join('');
 
-  const total = calc.bruto - calc.desconto;
+  // Aplica desconto manual sobre subtotal já com promo
+  const subtotalAposPromo = calc.bruto - calc.desconto;
+  const descManual = calcularDescontoManual(subtotalAposPromo);
+  const total = subtotalAposPromo - descManual;
+
   const vendedor = DB.vendedores.find(v=>v.id==document.getElementById('vendedorCaixa').value);
   let comissao = 0;
   calc.itens.forEach(it=>{ comissao += it.total * (it.comissao/100); });
@@ -2527,13 +2569,30 @@ function renderCarrinho(){
   document.getElementById('descontoTotal').textContent = '- '+fmt(calc.desconto);
   document.getElementById('comissaoEst').textContent = fmt(comissao);
   document.getElementById('totalCaixa').textContent = fmt(total);
+
+  // Mostra desconto manual aplicado em linha auxiliar
+  const elDM = document.getElementById('linhaDescManualValor');
+  if(elDM){
+    if(descManual > 0){
+      const tipoSel = document.getElementById('descontoManualTipo');
+      const inp = document.getElementById('descontoManual');
+      const tipo = tipoSel ? tipoSel.value : 'valor';
+      const valOrig = +inp.value || 0;
+      const detalhe = tipo === 'percent' ? `${valOrig}% de ${fmt(subtotalAposPromo)}` : 'manual';
+      elDM.innerHTML = `<span style="font-size:11px">↳ Aplicado: ${detalhe}</span><span style="color:var(--dourado-claro);font-size:13px">- ${fmt(descManual)}</span>`;
+    } else {
+      elDM.innerHTML = '';
+    }
+  }
 }
 document.getElementById('vendedorCaixa').addEventListener('change', renderCarrinho);
 
 function finalizarVenda(){
   if(!DB.carrinho.length){ toast('Carrinho vazio','error'); return; }
   const calc = calcularPromos();
-  const total = calc.bruto - calc.desconto;
+  const subtotalAposPromo = calc.bruto - calc.desconto;
+  const descManual = calcularDescontoManual(subtotalAposPromo);
+  const total = subtotalAposPromo - descManual;
   const vendedor = DB.vendedores.find(v=>v.id==document.getElementById('vendedorCaixa').value);
   let custoTotal = 0, comissao = 0;
   calc.itens.forEach(it=>{
@@ -2542,12 +2601,18 @@ function finalizarVenda(){
   });
   if(vendedor && vendedor.comissao>0) comissao += total * (vendedor.comissao/100);
 
+  const motivoEl = document.getElementById('descontoMotivo');
+  const motivoDesc = motivoEl ? (motivoEl.value||'').trim() : '';
+
   const venda = {
     id: novoId(DB.vendas),
     data: new Date().toISOString(),
     itens: calc.itens,
     bruto: calc.bruto,
-    desconto: calc.desconto,
+    desconto: calc.desconto + descManual,           // total de descontos (promo + manual)
+    descontoPromo: calc.desconto,                   // só promoções
+    descontoManual: descManual,                     // só desconto manual
+    descontoMotivo: motivoDesc,
     total,
     custo: custoTotal,
     comissao,
@@ -2562,6 +2627,10 @@ function finalizarVenda(){
     if(p){ p.estoque -= it.qtd; if(p.estoque<0) p.estoque=0; }
   });
   DB.carrinho = [];
+  // Reseta inputs de desconto manual
+  const dm = document.getElementById('descontoManual'); if(dm) dm.value = 0;
+  const dt = document.getElementById('descontoManualTipo'); if(dt) dt.value = 'valor';
+  const dmot = document.getElementById('descontoMotivo'); if(dmot) dmot.value = '';
   salvar();
   renderCaixa(); refresh();
   toast(`Venda finalizada: ${fmt(total)} 🎉`);
@@ -2754,8 +2823,9 @@ function dashboard(){
   const m = calcVendas(vendasMes);
 
   // ========== Rateio dos custos fixos ==========
-  const fixDia = fixosPorCategoria(30.42);
-  const fixSem = fixosPorCategoria(SEMANAS_POR_MES);
+  // Usa 30 dias/mês e 4 semanas/mês (mental do usuário, não calendário)
+  const fixDia = fixosPorCategoria(30);
+  const fixSem = fixosPorCategoria(4);
   const fixMes = fixosPorCategoria(1);
 
   // ========== HOJE ==========
@@ -3279,9 +3349,9 @@ function calcularMetaSemana(){
   const pctCusto = meta > 0 ? (custoMercSemana / meta * 100) : 0;
   const pctCom = meta > 0 ? (pctComMedio / meta * 100) : 0;
 
-  // Custos fixos por categoria — rateio semanal
+  // Custos fixos por categoria — rateio semanal (4 semanas/mês)
   const fixSem = (typeof fixosPorCategoria === 'function')
-    ? fixosPorCategoria(SEMANAS_POR_MES)
+    ? fixosPorCategoria(4)
     : {mao:0, transp:0, comFixa:0, proLab:0, total:0};
 
   // Custos variáveis (já calculados das caixas)
@@ -3332,11 +3402,22 @@ function calcularMetaSemana(){
     <td style="color:var(--dourado-escuro);font-weight:700;font-size:15px">${fmt(lucroBruto)}</td>
     <td>${meta>0 ? (lucroBruto/meta*100).toFixed(1) : 0}%</td>
   </tr>`;
-  // Custos fixos rateados
-  html += linha('👷','Mão de Obra (rateio sem)',   'FIXO', -fixSem.mao,     'var(--vermelho)', '#8B5E3C');
-  html += linha('🚚','Transporte (rateio sem)',    'FIXO', -fixSem.transp,  'var(--vermelho)', '#8B5E3C');
-  html += linha('💵','Comissão Fixa (rateio sem)', 'FIXO', -fixSem.comFixa, 'var(--vermelho)', '#8B5E3C');
-  html += linha('👔','Pró-labore (rateio sem)',    'FIXO', -fixSem.proLab,  'var(--vermelho)', '#8B5E3C');
+  // Custos fixos rateados — mostra o mensal original ao lado do rateio
+  const fixMes = fixosPorCategoria(1);
+  const linhaFix = (icone, lbl, valSem, valMes) => {
+    const pct = meta>0 ? (valSem/meta*100) : 0;
+    return `<tr>
+      <td style="text-align:center;font-size:18px">${icone}</td>
+      <td><b>${lbl}</b><br><small style="color:var(--marrom-suave);font-weight:400">${fmt(valMes)}/mês ÷ 4 sem</small></td>
+      <td><span class="badge" style="background:#8B5E3C;color:#fff;font-size:10px">FIXO</span></td>
+      <td style="color:var(--vermelho);font-weight:700">- ${fmt(valSem)}</td>
+      <td style="font-weight:600">${pct.toFixed(1)}%</td>
+    </tr>`;
+  };
+  html += linhaFix('👷','Mão de Obra',    fixSem.mao,     fixMes.mao);
+  html += linhaFix('🚚','Transporte',     fixSem.transp,  fixMes.transp);
+  html += linhaFix('💵','Comissão Fixa',  fixSem.comFixa, fixMes.comFixa);
+  html += linhaFix('👔','Pró-labore',     fixSem.proLab,  fixMes.proLab);
   // Lucro Líquido final
   const corLiq = lucro >= 0 ? 'var(--verde)' : 'var(--vermelho)';
   html += `<tr style="background:linear-gradient(135deg,var(--marrom-1),var(--marrom-2));color:var(--creme);font-weight:700">
