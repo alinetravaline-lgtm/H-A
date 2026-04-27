@@ -1056,6 +1056,19 @@
       </div>
     </div>
 
+    <div class="sim-destaque" style="margin-top:10px;background:linear-gradient(135deg,var(--marrom-2),var(--marrom-3));border-color:var(--dourado)">
+      <div>
+        <div class="lbl">📊 Lucro Bruto MENSAL <small style="color:var(--creme-2);text-transform:none;letter-spacing:0;font-weight:400">(× 4 sem)</small></div>
+        <div class="val" id="metaLucroBrutoMes" style="color:var(--dourado-claro)">R$ 0,00</div>
+        <div class="sub" id="metaResumoMes">Projeção mantendo 4 semanas trabalhadas/mês</div>
+      </div>
+      <div class="lado">
+        <div style="font-size:11px;color:var(--dourado-claro);text-transform:uppercase;letter-spacing:1px">🎯 Lucro Líquido MENSAL</div>
+        <div class="v" id="metaLucroMes">R$ 0,00</div>
+        <div style="font-size:11px;color:var(--creme-2);margin-top:4px" id="metaMargemMes">Margem: 0%</div>
+      </div>
+    </div>
+
     <div style="margin-top:14px;padding:14px;background:rgba(212,175,55,.08);border:1px dashed var(--dourado);border-radius:10px">
       <div class="row between" style="font-size:13px;color:var(--marrom-3)">
         <span>📌 <b>Ponto de Equilíbrio Semanal</b> (mínimo para não dar prejuízo)</span>
@@ -3436,7 +3449,25 @@ function calcularMetaSemana(){
   const elL = document.getElementById('metaLucro');
   elL.textContent = fmt(lucro);
   elL.style.color = lucro>=0 ? 'var(--dourado-claro)' : '#ff8a8a';
-  document.getElementById('metaMargem').textContent = `Margem líquida: ${margem.toFixed(1)}%  •  ${totalCxSem} cx/sem  •  Anual: ${fmt(lucro * SEMANAS_POR_MES * 12)}`;
+  document.getElementById('metaMargem').textContent = `Margem líquida: ${margem.toFixed(1)}%  •  ${totalCxSem} cx/sem  •  Anual: ${fmt(lucro * 12 * 4)}`;
+
+  // ========= PROJEÇÃO MENSAL (4 semanas/mês) =========
+  const semanasMes = 4;
+  const metaMes = meta * semanasMes;
+  const lucroBrutoMes = lucroBruto * semanasMes;
+  // Lucro líquido mensal = (lucro bruto sem × 4) − fixos mensais cheios
+  const fixosMensaisTotal = (DB.custosFixos||[]).filter(f=>f.ativo).reduce((s,f)=>s+(+f.valor||0),0);
+  const lucroLiqMes = lucroBrutoMes - fixosMensaisTotal;
+  const margemMes = metaMes>0 ? (lucroLiqMes/metaMes*100) : 0;
+
+  const elBM = document.getElementById('metaLucroBrutoMes');
+  if(elBM){ elBM.textContent = fmt(lucroBrutoMes); elBM.style.color = lucroBrutoMes>=0?'var(--dourado-claro)':'#ff8a8a'; }
+  const elLM = document.getElementById('metaLucroMes');
+  if(elLM){ elLM.textContent = fmt(lucroLiqMes); elLM.style.color = lucroLiqMes>=0?'var(--dourado-claro)':'#ff8a8a'; }
+  const elMM = document.getElementById('metaMargemMes');
+  if(elMM) elMM.textContent = `Margem: ${margemMes.toFixed(1)}%  •  ${totalCxSem*semanasMes} cx/mês  •  Anual: ${fmt(lucroLiqMes*12)}`;
+  const elRM = document.getElementById('metaResumoMes');
+  if(elRM) elRM.textContent = `Receita ${fmt(metaMes)}/mês − fixos ${fmt(fixosMensaisTotal)}/mês`;
 
   // ========= PONTO DE EQUILÍBRIO =========
   const margBruta = 1 - (pctCusto/100) - (pctCom/100);
