@@ -1118,9 +1118,32 @@
     <h3 style="color:var(--marrom-1);margin-bottom:14px">Backup dos Dados</h3>
     <p style="color:var(--marrom-3);margin-bottom:12px;font-size:14px">Exporte um arquivo JSON com todos os seus dados. Importe depois para restaurar.</p>
     <div class="row">
-      <button class="btn btn-gold" onclick="exportarBackup()">📥 Exportar Backup</button>
+      <button class="btn btn-gold" onclick="exportarBackup()">📥 Exportar Backup (.json)</button>
       <label class="btn btn-primary" style="cursor:pointer">📤 Importar Backup<input type="file" id="importFile" accept=".json" style="display:none"></label>
       <button class="btn btn-danger" onclick="resetarTudo()">⚠️ Limpar Todos os Dados</button>
+    </div>
+    <div style="margin-top:18px;padding:14px;background:linear-gradient(135deg,var(--marrom-1),var(--marrom-2));color:var(--creme);border-radius:12px;border:2px solid var(--dourado-claro)">
+      <h4 style="color:var(--dourado-claro);font-size:15px;margin-bottom:8px">☁️ Sincronização em nuvem (Supabase)</h4>
+      <p style="font-size:13px;line-height:1.6;color:var(--creme-2);margin-bottom:12px">Seus dados ficam salvos na nuvem e <b style="color:var(--dourado-claro)">sincronizam automaticamente</b> entre desktop e celular. Toda venda/alteração é enviada em segundos.</p>
+      <div class="row" style="gap:8px;flex-wrap:wrap;margin-bottom:10px">
+        <button class="btn btn-gold" onclick="syncEnviarNuvem()">⬆️ Enviar para a nuvem agora</button>
+        <button class="btn btn-primary" onclick="syncBaixarNuvem()">⬇️ Baixar da nuvem</button>
+        <label style="display:inline-flex;align-items:center;gap:6px;color:var(--creme-2);font-size:13px;cursor:pointer">
+          <input type="checkbox" id="syncAuto" onchange="toggleSyncAuto(this.checked)" style="width:auto;margin:0">
+          Sync automático (a cada salvamento)
+        </label>
+      </div>
+      <div id="syncStatus" style="font-size:12px;color:var(--creme-2);padding:8px 10px;background:rgba(0,0,0,.2);border-radius:8px;border-left:3px solid var(--dourado-claro)">⏳ Carregando status…</div>
+      <small style="display:block;margin-top:10px;font-size:11px;color:var(--creme-2);opacity:.85">💡 <b>Primeira vez:</b> Clique "Enviar para nuvem" no desktop. Depois, no celular, clique "Baixar da nuvem". Pronto — tudo sincronizado!</small>
+    </div>
+
+    <div style="margin-top:14px;padding:14px;background:var(--creme-2);border-radius:12px">
+      <h4 style="color:var(--marrom-1);font-size:14px;margin-bottom:8px">🔗 Compartilhar via link (alternativa offline)</h4>
+      <div class="row" style="gap:8px;flex-wrap:wrap">
+        <button class="btn btn-gold" onclick="gerarLinkBackup()">🔗 Gerar link com meus dados</button>
+        <button class="btn btn-ghost" onclick="copiarJSONBackup()">📋 Copiar JSON (texto)</button>
+      </div>
+      <small style="display:block;margin-top:8px;font-size:11px;color:var(--marrom-3)">Use só se a nuvem não funcionar. Mande o link via WhatsApp pra você mesma.</small>
     </div>
   </div>
 </section>
@@ -3246,6 +3269,217 @@ function salvarNegocio(){
 /* ===========================================================
    BACKUP
 =========================================================== */
+/* ============== SINCRONIZAÇÃO COM SUPABASE (NUVEM) ============== */
+const SUPABASE_URL = 'https://omjqpblyjzbaryrsbhco.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9tanFwYmx5anpiYXJ5cnNiaGNvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUzMjUyMDEsImV4cCI6MjA5MDkwMTIwMX0.OTtek-ogpucpouO5vLDANRjiFyN1W0Pfc-spDOwl2b8';
+const SUPABASE_TABLE = 'ha_gourmet_dados';
+const SUPABASE_ROW_ID = 'master';
+
+/* Detecta o tipo de dispositivo (para info na tabela) */
+function tipoDispositivo(){
+  return /Mobi|Android|iPhone|iPad/i.test(navigator.userAgent) ? 'mobile' : 'desktop';
+}
+
+/* Atualiza o status visual da sincronização */
+function setSyncStatus(texto, tipo){
+  const el = document.getElementById('syncStatus');
+  if(!el) return;
+  el.textContent = texto;
+  const cores = {ok:'#4F7942', erro:'#B33A3A', loading:'var(--dourado-claro)'};
+  el.style.borderLeftColor = cores[tipo] || cores.loading;
+}
+
+/* Envia o DB atual para a nuvem (UPDATE no Supabase) */
+async function syncEnviarNuvem(silencioso){
+  if(!silencioso) setSyncStatus('⬆️ Enviando dados para a nuvem...', 'loading');
+  try{
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?id=eq.${SUPABASE_ROW_ID}`, {
+      method: 'PATCH',
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY,
+        'Content-Type': 'application/json',
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify({
+        dados: DB,
+        dispositivo: tipoDispositivo()
+      })
+    });
+    if(!resp.ok){
+      const t = await resp.text();
+      throw new Error(`HTTP ${resp.status}: ${t}`);
+    }
+    const result = await resp.json();
+    const versao = result[0]?.versao || '?';
+    const quando = new Date().toLocaleTimeString('pt-BR');
+    setSyncStatus(`✓ Enviado! Versão ${versao} • ${quando} • ${tipoDispositivo()}`, 'ok');
+    if(!silencioso) toast('☁️ Dados enviados para a nuvem!');
+    return true;
+  }catch(e){
+    setSyncStatus(`❌ Erro ao enviar: ${e.message}`, 'erro');
+    if(!silencioso) toast('Erro ao sincronizar: '+e.message,'error');
+    return false;
+  }
+}
+
+/* Baixa os dados da nuvem (GET no Supabase) */
+async function syncBaixarNuvem(){
+  setSyncStatus('⬇️ Baixando dados da nuvem...', 'loading');
+  try{
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?id=eq.${SUPABASE_ROW_ID}&select=*`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY
+      }
+    });
+    if(!resp.ok) throw new Error('HTTP ' + resp.status);
+    const arr = await resp.json();
+    if(!arr.length || !arr[0].dados || Object.keys(arr[0].dados).length === 0){
+      setSyncStatus('⚠️ Nuvem vazia. Envie do desktop primeiro!', 'erro');
+      toast('A nuvem está vazia. Envie do desktop primeiro.','error');
+      return false;
+    }
+    const dadosNuvem = arr[0].dados;
+    const versao = arr[0].versao;
+    const quando = new Date(arr[0].atualizado_em).toLocaleString('pt-BR');
+    const dispositivoOrigem = arr[0].dispositivo || 'desconhecido';
+
+    confirmar(
+      '📥 Baixar dados da nuvem?',
+      `Os dados deste dispositivo serão SUBSTITUÍDOS pelos da nuvem (versão ${versao}, enviada de ${dispositivoOrigem} em ${quando}).`,
+      ()=>{
+        DB = dadosNuvem;
+        salvar();
+        setSyncStatus(`✓ Baixado! Versão ${versao} • origem: ${dispositivoOrigem}`, 'ok');
+        toast('☁️ Dados baixados da nuvem!');
+        setTimeout(()=>location.reload(), 800);
+      }
+    );
+    return true;
+  }catch(e){
+    setSyncStatus(`❌ Erro ao baixar: ${e.message}`, 'erro');
+    toast('Erro ao baixar: '+e.message,'error');
+    return false;
+  }
+}
+
+/* Verifica o status da nuvem (versão atual e quando foi atualizada) */
+async function syncStatusNuvem(){
+  try{
+    const resp = await fetch(`${SUPABASE_URL}/rest/v1/${SUPABASE_TABLE}?id=eq.${SUPABASE_ROW_ID}&select=versao,atualizado_em,dispositivo`, {
+      headers: {
+        'apikey': SUPABASE_KEY,
+        'Authorization': 'Bearer ' + SUPABASE_KEY
+      }
+    });
+    if(!resp.ok) throw new Error('HTTP ' + resp.status);
+    const arr = await resp.json();
+    if(!arr.length){
+      setSyncStatus('⚠️ Nuvem não configurada', 'erro');
+      return;
+    }
+    const r = arr[0];
+    const quando = new Date(r.atualizado_em).toLocaleString('pt-BR');
+    setSyncStatus(`☁️ Nuvem: v${r.versao} • ${quando} • ${r.dispositivo||'?'}`, 'ok');
+  }catch(e){
+    setSyncStatus(`❌ Sem conexão: ${e.message}`, 'erro');
+  }
+}
+
+/* Liga/desliga sync automático */
+function toggleSyncAuto(ativar){
+  localStorage.setItem('ha_sync_auto', ativar ? '1' : '0');
+  toast(ativar ? '🔄 Sync automático ativado' : '⏸ Sync automático desativado');
+}
+
+/* Salva no localStorage E envia pra nuvem (se sync auto estiver ativo).
+   Substitui a função salvar() original via override. */
+const _salvarOriginal = salvar;
+salvar = function(){
+  _salvarOriginal();
+  if(localStorage.getItem('ha_sync_auto') === '1'){
+    // Debounce para evitar spam: agenda envio em 1.5s
+    clearTimeout(window._syncTimeout);
+    window._syncTimeout = setTimeout(()=>{ syncEnviarNuvem(true); }, 1500);
+  }
+};
+
+/* Gera um link compartilhável com os dados em base64 no hash da URL.
+   O link é copiado para o clipboard e o usuário pode mandar via WhatsApp/email. */
+function gerarLinkBackup(){
+  try{
+    const json = JSON.stringify(DB);
+    // base64 unicode-safe
+    const b64 = btoa(unescape(encodeURIComponent(json)));
+    const url = location.origin + location.pathname + '#data=' + b64;
+    const tamanhoKB = (b64.length/1024).toFixed(1);
+
+    // Tenta copiar para o clipboard
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(url).then(()=>{
+        toast(`✓ Link copiado! (${tamanhoKB} KB) Mande pelo WhatsApp pra você mesma.`);
+      }).catch(()=>{
+        promptCopia(url, tamanhoKB);
+      });
+    } else {
+      promptCopia(url, tamanhoKB);
+    }
+  } catch(e){
+    toast('Erro ao gerar link: '+e.message,'error');
+  }
+}
+
+function promptCopia(texto, tamKB){
+  // Fallback: mostra modal com o texto pra copiar manualmente
+  const m = document.getElementById('modal');
+  document.getElementById('modalTitle').textContent = '🔗 Link gerado';
+  document.getElementById('modalMsg').innerHTML =
+    `<p style="font-size:13px;margin-bottom:10px">Tamanho: ${tamKB} KB. Copie o link abaixo e mande pelo WhatsApp pra abrir no celular:</p>` +
+    `<textarea readonly onclick="this.select()" style="width:100%;height:120px;font-size:11px;font-family:monospace">${texto}</textarea>`;
+  modalCallback = ()=>{};
+  m.classList.add('show');
+}
+
+function copiarJSONBackup(){
+  const json = JSON.stringify(DB, null, 2);
+  if(navigator.clipboard && navigator.clipboard.writeText){
+    navigator.clipboard.writeText(json).then(()=>{
+      toast('✓ JSON copiado para a área de transferência!');
+    }).catch(()=>{
+      toast('Não foi possível copiar — use Exportar Backup','error');
+    });
+  } else {
+    toast('Não suportado neste navegador — use Exportar Backup','error');
+  }
+}
+
+/* Detecta se a URL tem #data=... e oferece importar os dados (usado para
+   sincronização entre desktop e celular via link compartilhado). */
+function detectarLinkDados(){
+  if(!location.hash || !location.hash.startsWith('#data=')) return;
+  const b64 = location.hash.slice(6);
+  if(!b64) return;
+  try{
+    const json = decodeURIComponent(escape(atob(b64)));
+    const importedDB = JSON.parse(json);
+    confirmar(
+      '📲 Importar dados do link?',
+      'Os dados deste dispositivo serão SUBSTITUÍDOS pelos dados que vieram no link. Isso é útil pra sincronizar do desktop com o celular.',
+      ()=>{
+        DB = importedDB;
+        salvar();
+        // Limpa o hash para não importar de novo se recarregar
+        history.replaceState(null, '', location.pathname);
+        toast('✓ Dados importados com sucesso!');
+        setTimeout(()=>location.reload(), 1200);
+      }
+    );
+  }catch(e){
+    toast('Link inválido ou corrompido','error');
+  }
+}
+
 function exportarBackup(){
   const blob = new Blob([JSON.stringify(DB,null,2)],{type:'application/json'});
   const url = URL.createObjectURL(blob);
@@ -3744,6 +3978,14 @@ function init(){
   if(typeof calcularSimulador === 'function') calcularSimulador();
   if(typeof renderMetaInputs === 'function') renderMetaInputs();
   if(typeof calcularMetaSemana === 'function') calcularMetaSemana();
+  // Verifica se há dados sendo importados via URL (sincronização entre dispositivos)
+  if(typeof detectarLinkDados === 'function') setTimeout(detectarLinkDados, 400);
+
+  // ==== SUPABASE: Status inicial e restauro do checkbox de sync auto ====
+  const syncAutoSalvo = localStorage.getItem('ha_sync_auto') === '1';
+  const cbSync = document.getElementById('syncAuto');
+  if(cbSync) cbSync.checked = syncAutoSalvo;
+  if(typeof syncStatusNuvem === 'function') setTimeout(syncStatusNuvem, 800);
 }
 init();
 </script>
